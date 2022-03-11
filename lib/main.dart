@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_guide/answer.dart';
+import 'package:flutter_guide/quiz.dart';
 import 'question.dart';
+import 'result.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({Key key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -16,49 +18,75 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter 1st project'),
+      home: MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-  final String title;
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
   var listcount = 0;
+  var totalscore = 0;
   List list = [
     {
       "questiontext": "what is your favorite colour?",
-      "answertext": ["blue", "black", "pink", "orange"]
+      "answertext": [
+        {"answerchosen": "blue", "score": 3},
+        {"answerchosen": "black", "score": 1},
+        {"answerchosen": "pink", "score": 6},
+        {"answerchosen": "orange", "score": 5}
+      ]
     },
     {
       "questiontext": "what is your favorite animal?",
-      "answertext": ["lion", "tiger", "elephant", "panda"]
+      "answertext": [
+        {"answerchosen": "lion", "score": 8},
+        {"answerchosen": "tiger", "score": 9},
+        {"answerchosen": "elephant", "score": 2},
+        {"answerchosen": "panda", "score": 3}
+      ]
     },
     {
       "questiontext": "what is your favorite superhero?",
-      "answertext": ["spiderman", "batman", "doremon", "ironman"]
+      "answertext": [
+        {"answerchosen": "spiderman", "score": 4},
+        {"answerchosen": "batman", "score": 5},
+        {"answerchosen": "thanos", "score": 1},
+        {"answerchosen": "ironman", "score": 9}
+      ]
     },
     {
       "questiontext": "what is your favorite mobile brand?",
-      "answertext": ["oppo", "nokia", "iphone", "redmi"]
+      "answertext": [
+        {"answerchosen": "oppo", "score": 5},
+        {"answerchosen": "nokia", "score": 1},
+        {"answerchosen": "iphone", "score": 9},
+        {"answerchosen": "redmi", "score": 7}
+      ]
     },
     {
       "questiontext": "what is your favorite programming language?",
-      "answertext": ["c++", "java", "dart", "python"]
+      "answertext": [
+        {"answerchosen": "c++", "score": 1},
+        {"answerchosen": "java", "score": 6},
+        {"answerchosen": "dart", "score": 9},
+        {"answerchosen": "python", "score": 7}
+      ]
     },
   ];
-  void answeredQuestion() {
+
+
+  void answeredQuestion(int score) {
+    totalscore += score;
     setState(() {
-     // for (listcount= 0; listcount <= 3; listcount++);
-     //listcount = listcount + 1;
-      (listcount <= 3)
-          ? {listcount = listcount + 1}
-          : {listcount = listcount - 3};
+      listcount = listcount+1;
+      // (listcount <= 3)
+      //     ? {listcount = listcount + 1}
+      //     : {listcount = listcount - 3};
     });
     print(listcount);
   }
@@ -67,21 +95,25 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: const Text("Quiz test "),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Question(list[listcount]["questiontext"]),
-            ...(list[listcount]["answertext"]).map((answer) {
-              print(answer);
-              return Answer(answeredQuestion, answer);
-
-            }),
-          ],
-        ),
+          child: listcount < list.length
+          ? Quiz(
+        listcount: listcount,
+        answeredQuestion: answeredQuestion,
+        list: list,
+      )
+            :  Result (resetgame: reserGame,resultScore: totalscore),
       ),
     );
+
+  }
+
+ void  reserGame() {
+    setState(() {
+      listcount = 0;
+      totalscore = 0;
+    });
   }
 }
